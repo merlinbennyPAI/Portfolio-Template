@@ -1,21 +1,21 @@
 {
   "hero": {
-    "name": "",
-    "headline": "",
-    "summary": ""
+    "name": "Malu",
+    "headline": "Problem Solver | Data & Analytics",
+    "summary": "Junior professional with hands-on experience building data-driven solutions."
   },
-  "about": "",
-  "skills": [],
+  "about": "I enjoy turning data into meaningful insights.",
+  "skills": ["Excel", "SQL", "Power BI", "Python"],
   "projects": [
     {
-      "title": "",
-      "description": ""
+      "title": "Sales Dashboard",
+      "description": "Built an interactive Power BI dashboard to track hospital sales metrics."
     }
   ],
-  "experience": "",
-  "education": "",
+  "experience": "Junior-level experience through projects and internships.",
+  "education": "Bachelor’s degree in ...",
   "contact": {
-    "email": ""
+    "email": "merlinbenny21@gmail.com"
   }
 }
 

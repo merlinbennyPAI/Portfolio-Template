@@ -1,20 +1,22 @@
 {
   "hero": {
-    "name": "Malu",
-    "headline": "Aspiring Business Analyst",
-    "summary": "Junior-level analyst passionate about transforming data into insights."
+    "name": "",
+    "headline": "",
+    "summary": ""
   },
-  "about": "I enjoy data analysis, storytelling with data, and building dashboards to support business decisions.",
-  "skills": ["Excel", "SQL", "Power BI", "Python"],
+  "about": "",
+  "skills": [],
   "projects": [
     {
-      "title": "Hospital Sales Dashboard",
-      "description": "Built an interactive dashboard to analyze sales trends and identify patterns."
+      "title": "",
+      "description": ""
     }
   ],
-  "experience": "Worked on multiple academic and freelance projects involving data analysis and visualization.",
+  "experience": "",
+  "education": "",
   "contact": {
-    "email": "merlinbenny21@gmail.com"
+    "email": ""
   }
 }
+
 

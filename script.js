@@ -60,33 +60,48 @@ fetch("portfolio.json")
     `;
 
     /* ========= CONTACT ========= */
-    const contactSection = document.getElementById("contact-section");
-    contactSection.innerHTML = `<h2>Contact</h2>`;
+    /* ========= CONTACT ========= */
+const contactSection = document.getElementById("contact-section");
+contactSection.innerHTML = `<h2>Contact</h2>`;
 
-    if (data.contact.email) {
-      contactSection.innerHTML += `
-        <p>Email: 
-          <a href="mailto:${data.contact.email}">
-            ${data.contact.email}
-          </a>
-        </p>
-      `;
-    }
+let contactData = data.contact;
 
-    if (data.contact.phone) {
-      contactSection.innerHTML += `<p>Phone: ${data.contact.phone}</p>`;
-    }
+// If contact comes as string, parse it
+if (typeof contactData === "string") {
+  try {
+    contactData = JSON.parse(contactData);
+  } catch (e) {
+    contactSection.innerHTML += `<p>${contactData}</p>`;
+    return;
+  }
+}
 
-    if (data.contact.linkedin) {
-      contactSection.innerHTML += `
-        <p>
-          LinkedIn: 
-          <a href="${data.contact.linkedin}" target="_blank">
-            ${data.contact.linkedin}
-          </a>
-        </p>
-      `;
-    }
+if (contactData.email) {
+  contactSection.innerHTML += `
+    <p>Email: 
+      <a href="mailto:${contactData.email}">
+        ${contactData.email}
+      </a>
+    </p>
+  `;
+}
+
+if (contactData.phone) {
+  contactSection.innerHTML += `<p>Phone: ${contactData.phone}</p>`;
+}
+
+if (contactData.linkedin) {
+  contactSection.innerHTML += `
+    <p>
+      LinkedIn:
+      <a href="${contactData.linkedin}" target="_blank">
+        ${contactData.linkedin}
+      </a>
+    </p>
+  `;
+}
+
+    
 
   })
   .catch(err => {

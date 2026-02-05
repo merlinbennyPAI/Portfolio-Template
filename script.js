@@ -1,11 +1,10 @@
 fetch("portfolio.json")
   .then(response => response.json())
   .then(data => {
-
     /* ========= HERO ========= */
-    document.getElementById("name").textContent = data.hero.name || "";
-    document.getElementById("headline").textContent = data.hero.headline || "";
-    document.getElementById("summary").textContent = data.hero.summary || "";
+    document.getElementById("name").innerText = data.hero.name;
+    document.getElementById("headline").innerText = data.hero.headline;
+    document.getElementById("summary").innerText = data.hero.summary;
 
     /* ========= ABOUT ========= */
     if (data.about && data.about.trim() !== "") {
@@ -16,33 +15,38 @@ fetch("portfolio.json")
     }
 
     /* ========= SKILLS ========= */
-    const skillsSection = document.getElementById("skills-section");
     if (Array.isArray(data.skills) && data.skills.length > 0) {
-      skillsSection.innerHTML = `<h2>Skills</h2>`;
-      const ul = document.createElement("ul");
+      const skillsList = data.skills
+        .map(skill => `<li>${skill}</li>`)
+        .join("");
 
-      data.skills.forEach(skill => {
-        const li = document.createElement("li");
-        li.textContent = skill;
-        ul.appendChild(li);
-      });
-
-      skillsSection.appendChild(ul);
+      document.getElementById("skills-section").innerHTML = `
+        <h2>Skills</h2>
+        <ul>${skillsList}</ul>
+      `;
     }
 
     /* ========= PROJECTS (MANDATORY) ========= */
-    const projectsSection = document.getElementById("projects-section");
-    projectsSection.innerHTML = `<h2>Projects</h2>`;
+    if (!Array.isArray(data.projects) || data.projects.length === 0) {
+      throw new Error("Projects are mandatory but missing.");
+    }
+
+    let projectsHTML = "<h2>Projects</h2>";
 
     data.projects.forEach(project => {
-      const div = document.createElement("div");
-      div.className = "project-card";
-      div.innerHTML = `
-        <h3>${project.title}</h3>
-        <p>${project.description}</p>
+      if (!project.title || !project.description) {
+        throw new Error("Each project must have a title and description.");
+      }
+
+      projectsHTML += `
+        <div class="project">
+          <h3>${project.title}</h3>
+          <p>${project.description}</p>
+        </div>
       `;
-      projectsSection.appendChild(div);
     });
+
+    document.getElementById("projects-section").innerHTML = projectsHTML;
 
     /* ========= EXPERIENCE (OPTIONAL) ========= */
     if (data.experience && data.experience.trim() !== "") {
@@ -60,48 +64,53 @@ fetch("portfolio.json")
       `;
     }
 
-    /* ========= CONTACT (STRING OR OBJECT SAFE) ========= */
+    /* ========= CONTACT ========= */
     const contactSection = document.getElementById("contact-section");
-    contactSection.innerHTML = `<h2>Contact</h2>`;
+    let contact = data.contact;
 
-    let contactData = data.contact;
-
-    // Handle stringified JSON
-    if (typeof contactData === "string") {
+    // Normalize contact (string → object if needed)
+    if (typeof contact === "string") {
       try {
-        contactData = JSON.parse(contactData);
-      } catch (e) {
-        contactSection.innerHTML += `<p>${contactData}</p>`;
-        return;
+        contact = JSON.parse(contact);
+      } catch {
+        contact = {};
       }
     }
 
-    if (contactData.email) {
-      contactSection.innerHTML += `
-        <p>Email:
-          <a href="mailto:${contactData.email}">
-            ${contactData.email}
-          </a>
-        </p>
-      `;
-    }
+    if (contact && Object.keys(contact).length > 0) {
+      contactSection.innerHTML = "<h2>Contact</h2>";
 
-    if (contactData.phone) {
-      contactSection.innerHTML += `<p>Phone: ${contactData.phone}</p>`;
-    }
+      if (contact.email) {
+        contactSection.innerHTML += `
+          <p>Email:
+            <a href="mailto:${contact.email}">
+              ${contact.email}
+            </a>
+          </p>
+        `;
+      }
 
-    if (contactData.linkedin) {
-      contactSection.innerHTML += `
-        <p>
-          LinkedIn:
-          <a href="${contactData.linkedin}" target="_blank">
-            ${contactData.linkedin}
-          </a>
-        </p>
-      `;
-    }
+      if (contact.phone) {
+        contactSection.innerHTML += `<p>Phone: ${contact.phone}</p>`;
+      }
 
+      if (contact.linkedin) {
+        contactSection.innerHTML += `
+          <p>
+            LinkedIn:
+            <a href="${contact.linkedin}" target="_blank">
+              ${contact.linkedin}
+            </a>
+          </p>
+        `;
+      }
+    }
   })
   .catch(error => {
-    console.error("Error loading portfolio:", error);
+    console.error("Portfolio load error:", error);
+    document.body.innerHTML = `
+      <h2 style="color:red; text-align:center;">
+        Portfolio failed to load. Check required fields.
+      </h2>
+    `;
   });

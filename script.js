@@ -2,87 +2,59 @@ fetch("portfolio.json")
   .then(res => res.json())
   .then(data => {
 
-    // HERO
+    // HERO (mandatory)
     document.getElementById("name").innerText = data.hero.name;
     document.getElementById("headline").innerText = data.hero.headline;
     document.getElementById("summary").innerText = data.hero.summary;
 
-    // ABOUT
-    if (data.about && data.about.trim() !== "") {
-      document.getElementById("about").innerText = data.about;
-    }
+    // ABOUT (mandatory)
+    document.getElementById("about-section").innerHTML = `
+      <h2>About</h2>
+      <p>${data.about}</p>
+    `;
 
-    // SKILLS
-    if (Array.isArray(data.skills) && data.skills.length > 0) {
-      const skillsSection = document.getElementById("skills-section");
-      const heading = document.createElement("h2");
-      heading.innerText = "Skills";
-      skillsSection.appendChild(heading);
+    // SKILLS (mandatory)
+    const skillsSection = document.getElementById("skills-section");
+    skillsSection.innerHTML = "<h2>Skills</h2><ul></ul>";
+    const skillsList = skillsSection.querySelector("ul");
 
-      const ul = document.createElement("ul");
-      data.skills.forEach(skill => {
-        const li = document.createElement("li");
-        li.innerText = skill;
-        ul.appendChild(li);
-      });
-      skillsSection.appendChild(ul);
-    }
+    data.skills.forEach(skill => {
+      const li = document.createElement("li");
+      li.innerText = skill;
+      skillsList.appendChild(li);
+    });
 
-    // PROJECTS (MANDATORY TITLE + DESCRIPTION)
+    // PROJECTS (mandatory)
     const projectsSection = document.getElementById("projects-section");
-    const validProjects = data.projects.filter(
-      p => p.title && p.description
-    );
+    projectsSection.innerHTML = "<h2>Projects</h2>";
 
-    if (validProjects.length > 0) {
-      const heading = document.createElement("h2");
-      heading.innerText = "Projects";
-      projectsSection.appendChild(heading);
+    data.projects.forEach(project => {
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <h3>${project.title}</h3>
+        <p>${project.description}</p>
+      `;
+      projectsSection.appendChild(div);
+    });
 
-      validProjects.forEach(project => {
-        const div = document.createElement("div");
-        div.innerHTML = `
-          <h3>${project.title}</h3>
-          <p>${project.description}</p>
-        `;
-        projectsSection.appendChild(div);
-      });
+    // EXPERIENCE (optional)
+    if (data.experience) {
+      document.getElementById("experience-section").innerHTML = `
+        <h2>Experience</h2>
+        <p>${data.experience}</p>
+      `;
     }
 
-    // EXPERIENCE (OPTIONAL)
-    if (data.experience && data.experience.trim() !== "") {
-      const expSection = document.getElementById("experience-section");
-      const heading = document.createElement("h2");
-      heading.innerText = "Experience";
-      expSection.appendChild(heading);
+    // EDUCATION (mandatory)
+    document.getElementById("education-section").innerHTML = `
+      <h2>Education</h2>
+      <p>${data.education}</p>
+    `;
 
-      const p = document.createElement("p");
-      p.innerText = data.experience;
-      expSection.appendChild(p);
-    }
-
-    // EDUCATION (OPTIONAL)
-    if (data.education && data.education.trim() !== "") {
-      const eduSection = document.getElementById("education-section");
-      const heading = document.createElement("h2");
-      heading.innerText = "Education";
-      eduSection.appendChild(heading);
-
-      const p = document.createElement("p");
-      p.innerText = data.education;
-      eduSection.appendChild(p);
-    }
-
-    // CONTACT
-    if (data.contact && data.contact.email) {
-      const contactSection = document.getElementById("contact-section");
-      const heading = document.createElement("h2");
-      heading.innerText = "Contact";
-      contactSection.appendChild(heading);
-
-      const p = document.createElement("p");
-      p.innerText = `Email: ${data.contact.email}`;
-      contactSection.appendChild(p);
-    }
+    // CONTACT (mandatory)
+    document.getElementById("contact-section").innerHTML = `
+      <h2>Contact</h2>
+      <pre>${JSON.stringify(data.contact, null, 2)}</pre>
+    `;
   });
 

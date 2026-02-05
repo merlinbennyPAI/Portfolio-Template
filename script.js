@@ -2,21 +2,22 @@ fetch("portfolio.json")
   .then(res => res.json())
   .then(data => {
 
-    // HERO (mandatory)
+    /* ========= HERO ========= */
     document.getElementById("name").innerText = data.hero.name;
     document.getElementById("headline").innerText = data.hero.headline;
     document.getElementById("summary").innerText = data.hero.summary;
 
-    // ABOUT (mandatory)
-    document.getElementById("about-section").innerHTML = `
+    /* ========= ABOUT ========= */
+    const aboutSection = document.getElementById("about-section");
+    aboutSection.innerHTML = `
       <h2>About</h2>
       <p>${data.about}</p>
     `;
 
-    // SKILLS (mandatory)
+    /* ========= SKILLS ========= */
     const skillsSection = document.getElementById("skills-section");
-    skillsSection.innerHTML = "<h2>Skills</h2><ul></ul>";
-    const skillsList = skillsSection.querySelector("ul");
+    skillsSection.innerHTML = `<h2>Skills</h2>`;
+    const skillsList = document.createElement("ul");
 
     data.skills.forEach(skill => {
       const li = document.createElement("li");
@@ -24,9 +25,11 @@ fetch("portfolio.json")
       skillsList.appendChild(li);
     });
 
-    // PROJECTS (mandatory)
+    skillsSection.appendChild(skillsList);
+
+    /* ========= PROJECTS (MANDATORY) ========= */
     const projectsSection = document.getElementById("projects-section");
-    projectsSection.innerHTML = "<h2>Projects</h2>";
+    projectsSection.innerHTML = `<h2>Projects</h2>`;
 
     data.projects.forEach(project => {
       const div = document.createElement("div");
@@ -37,24 +40,55 @@ fetch("portfolio.json")
       projectsSection.appendChild(div);
     });
 
-    // EXPERIENCE (optional)
-    if (data.experience) {
-      document.getElementById("experience-section").innerHTML = `
+    /* ========= EXPERIENCE (OPTIONAL) ========= */
+    const experienceSection = document.getElementById("experience-section");
+
+    if (data.experience && data.experience.trim() !== "") {
+      experienceSection.innerHTML = `
         <h2>Experience</h2>
         <p>${data.experience}</p>
       `;
+    } else {
+      experienceSection.style.display = "none";
     }
 
-    // EDUCATION (mandatory)
-    document.getElementById("education-section").innerHTML = `
+    /* ========= EDUCATION ========= */
+    const educationSection = document.getElementById("education-section");
+    educationSection.innerHTML = `
       <h2>Education</h2>
       <p>${data.education}</p>
     `;
 
-    // CONTACT (mandatory)
-    document.getElementById("contact-section").innerHTML = `
-      <h2>Contact</h2>
-      <pre>${JSON.stringify(data.contact, null, 2)}</pre>
-    `;
-  });
+    /* ========= CONTACT ========= */
+    const contactSection = document.getElementById("contact-section");
+    contactSection.innerHTML = `<h2>Contact</h2>`;
 
+    if (data.contact.email) {
+      contactSection.innerHTML += `
+        <p>Email: 
+          <a href="mailto:${data.contact.email}">
+            ${data.contact.email}
+          </a>
+        </p>
+      `;
+    }
+
+    if (data.contact.phone) {
+      contactSection.innerHTML += `<p>Phone: ${data.contact.phone}</p>`;
+    }
+
+    if (data.contact.linkedin) {
+      contactSection.innerHTML += `
+        <p>
+          LinkedIn: 
+          <a href="${data.contact.linkedin}" target="_blank">
+            ${data.contact.linkedin}
+          </a>
+        </p>
+      `;
+    }
+
+  })
+  .catch(err => {
+    console.error("Failed to load portfolio data:", err);
+  });
